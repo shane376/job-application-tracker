@@ -2,11 +2,21 @@ from pathlib import Path
 from datetime import timedelta
 import os
 
+from django.core.exceptions import ImproperlyConfigured
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-key")
 DEBUG = os.getenv("DEBUG", "0") == "1"
 ALLOWED_HOSTS = [host.strip() for host in os.getenv("ALLOWED_HOSTS", "*").split(",") if host.strip()]
+
+if not DEBUG:
+    if not SECRET_KEY or SECRET_KEY == "unsafe-dev-key":
+        raise ImproperlyConfigured("SECRET_KEY must be set to a secure, non-default value when DEBUG is disabled.")
+    if not ALLOWED_HOSTS or "*" in ALLOWED_HOSTS:
+        raise ImproperlyConfigured("ALLOWED_HOSTS must be explicitly configured when DEBUG is disabled.")
+
+MAX_RESUME_FILE_SIZE = int(os.getenv("MAX_RESUME_FILE_SIZE", str(5 * 1024 * 1024)))
 
 INSTALLED_APPS = [
     "django.contrib.admin",
