@@ -8,4 +8,6 @@ export const API_ENDPOINTS = {
   applicationDetail: (id) => `/applications/${id}/`,
   RESUMES: '/resumes/',
   resumeDetail: (id) => `/resumes/${id}/`,
+  AI_MATCHES: '/ai/matches/',
+  AI_MATCH: '/ai/match/',
 };

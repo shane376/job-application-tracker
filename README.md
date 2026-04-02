@@ -29,6 +29,13 @@ Production-focused SaaS starter for tracking job applications, resume analysis, 
 - PDF text extraction service (`pypdf`) on upload
 - Resume upload page with upload form and uploaded resume history
 
+### Phase 5 (AI Matching)
+- Backend `MatchResult` model to persist analysis results
+- AI matching service with reusable prompt template and OpenAI integration
+- Structured JSON response contract: `match_score`, `missing_skills`, `improvement_suggestions`
+- AI match API endpoint to compare selected resume against application/job description
+- Frontend AI match workflow on Application Detail page
+
 ## Repository Structure
 
 ```text
@@ -87,7 +94,13 @@ docker compose up --build
 - `GET /api/v1/resumes/:id/`
 - `DELETE /api/v1/resumes/:id/`
 
-## Next Phases
+## AI Matching API (Phase 5)
 
-- Phase 5: AI resume/job matching services
+- `POST /api/v1/ai/match/`
+  - Input JSON: `{ "resume_id": number, "application_id": number? , "job_description": string? }`
+  - Output JSON fields include: `match_score`, `missing_skills`, `improvement_suggestions`
+- `GET /api/v1/ai/matches/`
+
+## Next Phase
+
 - Phase 6: Dashboard analytics and product polish

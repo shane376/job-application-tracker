@@ -21,4 +21,5 @@ urlpatterns = [
     path("auth/", include(("apps.users.api.urls", "users"), namespace="auth")),
     path("", include(("apps.applications.api.urls", "applications"), namespace="applications")),
     path("", include(("apps.resumes.api.urls", "resumes"), namespace="resumes")),
+    path("", include(("apps.ai_matching.api.urls", "ai-matching"), namespace="ai-matching")),
 ]

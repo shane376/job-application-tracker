@@ -176,3 +176,27 @@ section {
 .danger-btn {
   background: #b91c1c !important;
 }
+
+.ai-panel {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.ai-panel select {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.65rem;
+}
+
+.match-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.9rem;
+  background: #f8fafc;
+}
+
+.match-card h4 {
+  margin-top: 0;
+}
