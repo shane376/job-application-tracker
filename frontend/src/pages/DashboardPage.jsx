@@ -22,25 +22,52 @@ function DashboardPage() {
   const [isSaving, setIsSaving] = useState(false);
 
   const fetchDashboardData = async () => {
-    try {
-      const [
-        healthResponse,
-        applicationsResponse,
-        analyticsResponse,
-        matchesResponse,
-      ] = await Promise.all([
-        apiClient.get(API_ENDPOINTS.HEALTH),
-        apiClient.get(API_ENDPOINTS.APPLICATIONS),
-        apiClient.get(API_ENDPOINTS.ANALYTICS_OVERVIEW),
-        apiClient.get(API_ENDPOINTS.AI_MATCHES),
-      ]);
-      setHealth(`Backend status: ${healthResponse.data.status}`);
-      setApplications(applicationsResponse.data);
-      setAnalytics(analyticsResponse.data);
-      setRecentMatches(matchesResponse.data.slice(0, 5));
-    } catch (_error) {
+    const [
+      healthResult,
+      applicationsResult,
+      analyticsResult,
+      matchesResult,
+    ] = await Promise.allSettled([
+      apiClient.get(API_ENDPOINTS.HEALTH),
+      apiClient.get(API_ENDPOINTS.APPLICATIONS),
+      apiClient.get(API_ENDPOINTS.ANALYTICS_OVERVIEW),
+      apiClient.get(API_ENDPOINTS.AI_MATCHES),
+    ]);
+
+    const failures = [];
+
+    if (healthResult.status === "fulfilled") {
+      setHealth(`Backend status: ${healthResult.value.data.status}`);
+    } else {
       setHealth('Backend unavailable. Verify API container is running.');
-      setError('Unable to fetch your dashboard right now.');
+      failures.push('health');
+    }
+
+    if (applicationsResult.status === "fulfilled") {
+      setApplications(applicationsResult.value.data);
+    } else {
+      setApplications([]);
+      failures.push('applications');
+    }
+
+    if (analyticsResult.status === "fulfilled") {
+      setAnalytics(analyticsResult.value.data);
+    } else {
+      setAnalytics(null);
+      failures.push('analytics');
+    }
+
+    if (matchesResult.status === "fulfilled") {
+      setRecentMatches(matchesResult.value.data.slice(0, 5));
+    } else {
+      setRecentMatches([]);
+      failures.push('ai matches');
+    }
+
+    if (failures.length > 0) {
+      setError(`Some dashboard data could not be loaded (${failures.join(', ')}).`);
+    } else {
+      setError('');
     }
   };
 

@@ -127,14 +127,14 @@ function ApplicationDetailPage() {
           <h4>Match Score: {matchResult.match_score}/100</h4>
           <p><strong>Missing Skills</strong></p>
           <ul>
-            {matchResult.missing_skills.map((item) => (
-              <li key={item}>{item}</li>
+            {matchResult.missing_skills.map((item, index) => (
+              <li key={`missing-skill-${index}-${item}`}>{item}</li>
             ))}
           </ul>
           <p><strong>Improvement Suggestions</strong></p>
           <ul>
-            {matchResult.improvement_suggestions.map((item) => (
-              <li key={item}>{item}</li>
+            {matchResult.improvement_suggestions.map((item, index) => (
+              <li key={`suggestion-${index}-${item}`}>{item}</li>
             ))}
           </ul>
         </article>
