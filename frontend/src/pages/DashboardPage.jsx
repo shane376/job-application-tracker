@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../api/client';
 import { API_ENDPOINTS } from '../api/endpoints';
@@ -15,37 +15,38 @@ const INITIAL_FORM = {
 function DashboardPage() {
   const [health, setHealth] = useState('Checking backend...');
   const [applications, setApplications] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
+  const [recentMatches, setRecentMatches] = useState([]);
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
   const fetchDashboardData = async () => {
     try {
-      const [healthResponse, applicationsResponse] = await Promise.all([
+      const [
+        healthResponse,
+        applicationsResponse,
+        analyticsResponse,
+        matchesResponse,
+      ] = await Promise.all([
         apiClient.get(API_ENDPOINTS.HEALTH),
         apiClient.get(API_ENDPOINTS.APPLICATIONS),
+        apiClient.get(API_ENDPOINTS.ANALYTICS_OVERVIEW),
+        apiClient.get(API_ENDPOINTS.AI_MATCHES),
       ]);
       setHealth(`Backend status: ${healthResponse.data.status}`);
       setApplications(applicationsResponse.data);
+      setAnalytics(analyticsResponse.data);
+      setRecentMatches(matchesResponse.data.slice(0, 5));
     } catch (_error) {
       setHealth('Backend unavailable. Verify API container is running.');
-      setError('Unable to fetch your applications right now.');
+      setError('Unable to fetch your dashboard right now.');
     }
   };
 
   useEffect(() => {
     fetchDashboardData();
   }, []);
-
-  const statusCounts = useMemo(() => {
-    return applications.reduce(
-      (acc, application) => {
-        acc[application.status] = (acc[application.status] || 0) + 1;
-        return acc;
-      },
-      { applied: 0, interview: 0, rejected: 0, offer: 0 }
-    );
-  }, [applications]);
 
   const onChange = (event) => {
     const { name, value } = event.target;
@@ -66,6 +67,7 @@ function DashboardPage() {
       const response = await apiClient.post(API_ENDPOINTS.APPLICATIONS, formData);
       setApplications((prev) => [response.data, ...prev]);
       setFormData(INITIAL_FORM);
+      await fetchDashboardData();
     } catch (_error) {
       setError('Unable to create application. Please try again.');
     } finally {
@@ -80,26 +82,14 @@ function DashboardPage() {
       {error && <p className="form-error">{error}</p>}
 
       <div className="kpi-grid">
-        <article className="kpi-card">
-          <h3>Total</h3>
-          <p>{applications.length}</p>
-        </article>
-        <article className="kpi-card">
-          <h3>Applied</h3>
-          <p>{statusCounts.applied}</p>
-        </article>
-        <article className="kpi-card">
-          <h3>Interview</h3>
-          <p>{statusCounts.interview}</p>
-        </article>
-        <article className="kpi-card">
-          <h3>Rejected</h3>
-          <p>{statusCounts.rejected}</p>
-        </article>
-        <article className="kpi-card">
-          <h3>Offer</h3>
-          <p>{statusCounts.offer}</p>
-        </article>
+        <article className="kpi-card"><h3>Total Applications</h3><p>{analytics?.total_applications ?? applications.length}</p></article>
+        <article className="kpi-card"><h3>Applied</h3><p>{analytics?.status_breakdown?.applied ?? 0}</p></article>
+        <article className="kpi-card"><h3>Interview</h3><p>{analytics?.status_breakdown?.interview ?? 0}</p></article>
+        <article className="kpi-card"><h3>Rejected</h3><p>{analytics?.status_breakdown?.rejected ?? 0}</p></article>
+        <article className="kpi-card"><h3>Offer</h3><p>{analytics?.status_breakdown?.offer ?? 0}</p></article>
+        <article className="kpi-card"><h3>Resumes</h3><p>{analytics?.resumes_uploaded ?? 0}</p></article>
+        <article className="kpi-card"><h3>AI Matches</h3><p>{analytics?.matches_generated ?? 0}</p></article>
+        <article className="kpi-card"><h3>Avg Match Score</h3><p>{analytics?.avg_match_score ?? 0}</p></article>
       </div>
 
       <h3>Add Application</h3>
@@ -112,12 +102,7 @@ function DashboardPage() {
           <option value="rejected">Rejected</option>
           <option value="offer">Offer</option>
         </select>
-        <textarea
-          name="job_description"
-          placeholder="Job description"
-          value={formData.job_description}
-          onChange={onChange}
-        />
+        <textarea name="job_description" placeholder="Job description" value={formData.job_description} onChange={onChange} />
         <textarea name="notes" placeholder="Notes" value={formData.notes} onChange={onChange} />
         <button type="submit" disabled={isSaving}>{isSaving ? 'Saving...' : 'Create Application'}</button>
       </form>
@@ -130,6 +115,18 @@ function DashboardPage() {
             <p>{application.role}</p>
             <p className={`status-tag ${application.status}`}>{application.status}</p>
             <Link to={buildApplicationDetailRoute(application.id)}>Open details</Link>
+          </article>
+        ))}
+      </div>
+
+      <h3>Recent AI Match Results</h3>
+      <div className="application-grid">
+        {recentMatches.length === 0 && <p>No AI matches yet. Run one from an application detail page.</p>}
+        {recentMatches.map((match) => (
+          <article key={match.id} className="application-card">
+            <h4>Match #{match.id}</h4>
+            <p>Score: {match.match_score}/100</p>
+            <p>Missing skills: {match.missing_skills.length}</p>
           </article>
         ))}
       </div>

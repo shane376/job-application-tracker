@@ -10,4 +10,5 @@ export const API_ENDPOINTS = {
   resumeDetail: (id) => `/resumes/${id}/`,
   AI_MATCHES: '/ai/matches/',
   AI_MATCH: '/ai/match/',
+  ANALYTICS_OVERVIEW: '/analytics/overview/',
 };

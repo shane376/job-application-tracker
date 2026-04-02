@@ -36,6 +36,25 @@ Production-focused SaaS starter for tracking job applications, resume analysis, 
 - AI match API endpoint to compare selected resume against application/job description
 - Frontend AI match workflow on Application Detail page
 
+### Phase 6 (Product Polish + Analytics)
+- Analytics overview API for total applications, status distribution, resume count, AI match count, and average score
+- Dashboard upgraded with integrated analytics KPIs and recent AI match activity
+- Added `.gitignore` and tightened run/setup docs for developers and end users
+
+---
+
+## Prerequisites
+
+### For Docker run (recommended)
+- Docker Engine + Docker Compose
+
+### For local non-Docker run
+- Python 3.12+
+- Node.js 22+
+- PostgreSQL 16+
+
+---
+
 ## Repository Structure
 
 ```text
@@ -46,7 +65,9 @@ Production-focused SaaS starter for tracking job applications, resume analysis, 
 └── .env.example
 ```
 
-## Local Setup
+---
+
+## Quick Start (Docker)
 
 1. Copy environment templates:
 
@@ -56,51 +77,90 @@ cp frontend/.env.example frontend/.env
 cp .env.example .env
 ```
 
-2. Build and run services:
+2. (Optional) Set AI config in `backend/.env`:
+
+```env
+OPENAI_API_KEY=your-key-here
+OPENAI_MODEL=gpt-4o-mini
+```
+
+3. Build and run all services:
 
 ```bash
 docker compose up --build
 ```
 
-3. Verify services:
-
+4. Open the app:
 - Frontend: http://localhost:5173
-- Backend health (v1): http://localhost:8000/api/v1/health/
+- Backend health: http://localhost:8000/api/v1/health/
 
-## API Routing Convention
+---
 
-- Stable base path for frontend API calls: `/api/v1/`
-- Compatibility path also available during bootstrap: `/api/`
+## Local Development (without Docker)
 
-## Auth API (Phase 2)
+### Backend
 
-- `POST /api/v1/auth/register/`
-- `POST /api/v1/auth/login/`
-- `POST /api/v1/auth/refresh/`
-- `GET /api/v1/auth/me/`
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements/base.txt
+cp .env.example .env
+python manage.py migrate
+python manage.py runserver
+```
 
-## Applications API (Phase 3)
+### Frontend
 
-- `GET /api/v1/applications/`
-- `POST /api/v1/applications/`
-- `GET /api/v1/applications/:id/`
-- `PUT /api/v1/applications/:id/`
-- `DELETE /api/v1/applications/:id/`
+```bash
+cd frontend
+npm install
+cp .env.example .env
+npm run dev
+```
 
-## Resumes API (Phase 4)
+Frontend defaults to `VITE_API_BASE_URL=http://localhost:8000/api/v1`.
 
-- `GET /api/v1/resumes/`
-- `POST /api/v1/resumes/` (multipart form with `title` + `file`)
-- `GET /api/v1/resumes/:id/`
-- `DELETE /api/v1/resumes/:id/`
+---
 
-## AI Matching API (Phase 5)
+## API Summary
 
-- `POST /api/v1/ai/match/`
-  - Input JSON: `{ "resume_id": number, "application_id": number? , "job_description": string? }`
-  - Output JSON fields include: `match_score`, `missing_skills`, `improvement_suggestions`
-- `GET /api/v1/ai/matches/`
+Base prefix: `/api/v1/`
 
-## Next Phase
+### Auth
+- `POST /auth/register/`
+- `POST /auth/login/`
+- `POST /auth/refresh/`
+- `GET /auth/me/`
 
-- Phase 6: Dashboard analytics and product polish
+### Applications
+- `GET /applications/`
+- `POST /applications/`
+- `GET /applications/:id/`
+- `PUT /applications/:id/`
+- `DELETE /applications/:id/`
+
+### Resumes
+- `GET /resumes/`
+- `POST /resumes/` (multipart form with `title` + `file`)
+- `GET /resumes/:id/`
+- `DELETE /resumes/:id/`
+
+### AI Matching
+- `POST /ai/match/`
+  - Input JSON example: `{ "resume_id": 1, "application_id": 2 }`
+  - Optional fallback input: `{ "resume_id": 1, "job_description": "..." }`
+- `GET /ai/matches/`
+
+### Analytics
+- `GET /analytics/overview/`
+
+---
+
+## Next Steps
+
+Potential future enhancements:
+- richer analytics charts and time-series trends
+- background jobs for parsing/matching
+- full test suite (backend + frontend)
+- production deployment manifests
