@@ -1,0 +1,202 @@
+:root {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: #0f172a;
+  background-color: #f8fafc;
+}
+
+body {
+  margin: 0;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0f172a;
+  color: #fff;
+  padding: 1rem 1.5rem;
+}
+
+.top-nav nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.top-nav a {
+  color: #cbd5e1;
+  text-decoration: none;
+}
+
+.top-nav a:hover {
+  color: #fff;
+}
+
+.main-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+section {
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.user-chip {
+  background: #1e293b;
+  color: #cbd5e1;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.ghost-btn {
+  background: transparent;
+  color: #cbd5e1;
+  border: 1px solid #475569;
+  border-radius: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+}
+
+.auth-form,
+.app-form {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 650px;
+}
+
+.auth-form label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.92rem;
+}
+
+.auth-form input,
+.app-form input,
+.app-form select,
+.app-form textarea {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.7rem;
+}
+
+.app-form textarea {
+  min-height: 90px;
+}
+
+.auth-form button,
+.app-form button {
+  background: #0f172a;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.85rem;
+  cursor: pointer;
+}
+
+.form-error {
+  color: #b91c1c;
+  margin: 0;
+}
+
+.kpi-grid {
+  margin: 1rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+}
+
+.kpi-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.7rem;
+  padding: 0.75rem;
+}
+
+.kpi-card h3,
+.kpi-card p {
+  margin: 0;
+}
+
+.application-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+}
+
+.application-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.7rem;
+  padding: 0.8rem;
+}
+
+.application-card h4,
+.application-card p {
+  margin: 0 0 0.4rem;
+}
+
+.status-tag {
+  display: inline-block;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  text-transform: capitalize;
+}
+
+.status-tag.applied {
+  background: #e0f2fe;
+}
+
+.status-tag.interview {
+  background: #fef3c7;
+}
+
+.status-tag.rejected {
+  background: #fee2e2;
+}
+
+.status-tag.offer {
+  background: #dcfce7;
+}
+
+.row-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.danger-btn {
+  background: #b91c1c !important;
+}
+
+.ai-panel {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.ai-panel select {
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.65rem;
+}
+
+.match-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.9rem;
+  background: #f8fafc;
+}
+
+.match-card h4 {
+  margin-top: 0;
+}
