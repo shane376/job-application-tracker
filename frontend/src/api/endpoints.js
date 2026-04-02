@@ -6,4 +6,6 @@ export const API_ENDPOINTS = {
   AUTH_ME: '/auth/me/',
   APPLICATIONS: '/applications/',
   applicationDetail: (id) => `/applications/${id}/`,
+  RESUMES: '/resumes/',
+  resumeDetail: (id) => `/resumes/${id}/`,
 };

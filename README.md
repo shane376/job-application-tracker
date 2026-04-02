@@ -23,6 +23,12 @@ Production-focused SaaS starter for tracking job applications, resume analysis, 
 - Dashboard create/list/status analytics
 - Application detail edit/delete page
 
+### Phase 4 (Resume Upload + Parsing)
+- Backend `Resume` model with PDF file storage and extracted text persistence
+- User-scoped resumes API with upload/list/detail/delete support
+- PDF text extraction service (`pypdf`) on upload
+- Resume upload page with upload form and uploaded resume history
+
 ## Repository Structure
 
 ```text
@@ -74,8 +80,14 @@ docker compose up --build
 - `PUT /api/v1/applications/:id/`
 - `DELETE /api/v1/applications/:id/`
 
+## Resumes API (Phase 4)
+
+- `GET /api/v1/resumes/`
+- `POST /api/v1/resumes/` (multipart form with `title` + `file`)
+- `GET /api/v1/resumes/:id/`
+- `DELETE /api/v1/resumes/:id/`
+
 ## Next Phases
 
-- Phase 4: Resume upload and parsing
 - Phase 5: AI resume/job matching services
 - Phase 6: Dashboard analytics and product polish
