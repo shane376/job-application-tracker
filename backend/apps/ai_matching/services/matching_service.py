@@ -9,6 +9,36 @@ class AiMatchingError(Exception):
     pass
 
 
+def _coerce_match_score(value) -> int:
+    if value is None:
+        return 0
+
+    if isinstance(value, bool):
+        return 0
+
+    if isinstance(value, (int, float)):
+        return int(value)
+
+    if isinstance(value, str):
+        stripped = value.strip()
+        if not stripped:
+            return 0
+        try:
+            return int(float(stripped))
+        except ValueError:
+            return 0
+
+    return 0
+
+
+def _coerce_list(value) -> list:
+    if isinstance(value, list):
+        return value
+    if value is None:
+        return []
+    return [str(value)]
+
+
 def _fallback_match(resume_text: str, job_description: str) -> dict:
     resume_tokens = {token.lower() for token in resume_text.split()}
     jd_tokens = {token.lower() for token in job_description.split()}
@@ -67,9 +97,9 @@ def analyze_resume_match(resume_text: str, job_description: str) -> dict:
         content = body["choices"][0]["message"]["content"]
         parsed = json.loads(content)
         return {
-            "match_score": int(parsed.get("match_score", 0)),
-            "missing_skills": list(parsed.get("missing_skills", [])),
-            "improvement_suggestions": list(parsed.get("improvement_suggestions", [])),
+            "match_score": _coerce_match_score(parsed.get("match_score", 0)),
+            "missing_skills": _coerce_list(parsed.get("missing_skills", [])),
+            "improvement_suggestions": _coerce_list(parsed.get("improvement_suggestions", [])),
             "raw_response": parsed,
         }
     except Exception as exc:
